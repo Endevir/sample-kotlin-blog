@@ -1,0 +1,6 @@
+ktor:
+  deployment:
+    port: 13900
+  application:
+    modules:
+      - ru.endevir.ApplicationKt.module
