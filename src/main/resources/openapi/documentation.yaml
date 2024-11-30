@@ -1,0 +1,192 @@
+openapi: "3.1.0"
+info:
+  title: "Simple endevir blog API"
+  description: "REST API для мини-проекта - блога. Позволяет работать с постами, проходить аутентификацию и т.д."
+  version: "0.0.1"
+servers:
+- url: "/"
+paths:
+  /:
+    get:
+      description: "Базовый эндпоинт, возвращающий Hello world!"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Hello, world!"
+  /api/v1/posts:
+    get:
+      description: "Получить список постов"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+    post:
+      description: "Создать новый пост"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/BlogPostCreateEditDTO"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+                $ref: "#/components/schemas/BlogPost"
+        "400":
+          description: "Bad Request"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+    put:
+      description: "Обновить существующий пост"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/BlogPostCreateEditDTO"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+                $ref: "#/components/schemas/BlogPost"
+        "400":
+          description: "Bad Request"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+
+  /api/v1/posts/{postId}:
+    delete:
+      description: "Удалить пост по его ID"
+      parameters:
+      - name: "postId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+        "204":
+          description: "No Content"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+        "404":
+          description: "Not Found"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+  /api/v1/posts/searchByContent/{content}:
+    get:
+      description: "Поиск постов по содержимому"
+      parameters:
+      - name: "content"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+        "200":
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+  /api/v1/posts/searchByTitle/{title}:
+    get:
+      description: "Поиск постов по названию"
+      parameters:
+      - name: "title"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            'application/json':
+              schema:
+                type: "object"
+        "200":
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+components:
+  schemas:
+    Instant:
+      type: "object"
+      properties: {}
+    BlogPost:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        title:
+          type: "string"
+        content:
+          type: "string"
+        createdAt:
+          $ref: "#/components/schemas/Instant"
+        changedAt:
+          $ref: "#/components/schemas/Instant"
+      required:
+      - "id"
+      - "title"
+      - "content"
+      - "createdAt"
+      - "changedAt"
+    BlogPostCreateEditDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        title:
+          type: "string"
+        content:
+          type: "string"
+      required:
+        - "title"
+        - "content"
