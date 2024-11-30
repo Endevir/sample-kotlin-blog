@@ -15,6 +15,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:3.0.1")
     implementation("io.ktor:ktor-server-netty:3.0.1")
     implementation("io.ktor:ktor-server-config-yaml:3.0.1")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
 }
 
 tasks.test {
