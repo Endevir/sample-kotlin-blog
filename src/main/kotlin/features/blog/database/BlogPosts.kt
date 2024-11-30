@@ -1,10 +1,16 @@
 package features.blog.database
+import features.blog.entity.BlogPost
+import kotlinx.coroutines.Dispatchers
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 
 object BlogPostsTable : UUIDTable("blog_posts"){
@@ -21,3 +27,14 @@ class BlogPostDAO(id: EntityID<UUID>) : UUIDEntity(id) {
     var createdAt by BlogPostsTable.createdAt
     var changedAt by BlogPostsTable.changedAt
 }
+
+fun daoToModel(dao: BlogPostDAO) = BlogPost(
+    id=dao.id.value,
+    title=dao.title,
+    content = dao.content,
+    createdAt = dao.createdAt.toInstant(TimeZone.UTC),
+    changedAt = dao.changedAt.toInstant(TimeZone.UTC)
+)
+
+suspend fun <T> suspendTransaction(block: Transaction.() -> T): T =
+    newSuspendedTransaction(Dispatchers.IO, statement = block)

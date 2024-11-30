@@ -4,3 +4,9 @@ ktor:
   application:
     modules:
       - ru.endevir.ApplicationKt.module
+  database:
+    dbname: postgres
+    hostname: localhost
+    port: 5432
+    username: postgres
+    password: postgres

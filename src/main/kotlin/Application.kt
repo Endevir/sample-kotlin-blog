@@ -10,7 +10,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.plugins.swagger.*
 import kotlinx.serialization.json.Json
-import ru.endevir.features.blog.repository.FakeBlogPostRepository
+//import ru.endevir.features.blog.repository.FakeBlogPostRepository
+import ru.endevir.features.blog.repository.PgBlogPostRepository
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -33,6 +34,6 @@ fun Application.module() {
         }
         swaggerUI(path = "/api", swaggerFile = "openapi/documentation.yaml")
     }
-    configureBlogAPIV1(FakeBlogPostRepository(), "/api/v1")
+    configureBlogAPIV1(PgBlogPostRepository(), "/api/v1")
     configureDatabases()
 }

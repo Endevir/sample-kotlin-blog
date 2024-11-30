@@ -21,17 +21,17 @@ class FakeBlogPostRepository: BlogPostRepository {
         BlogPost(UUID.randomUUID(),"Тестовый пост блога 10", "Egestas finibus sed dapibus commodo ac tempus dis. Porttitor suspendisse habitant consectetur phasellus gravida natoque pulvinar. Erat nisi et ante natoque dapibus curabitur; congue hendrerit nec. Per varius platea torquent netus quisque cursus interdum tempor. Luctus ultricies odio nibh; sed facilisi dapibus maecenas convallis. Ornare torquent habitasse hendrerit class auctor. Adipiscing sagittis ut hendrerit hac vehicula tincidunt. Taciti blandit eu mauris condimentum suscipit quisque.", Clock.System.now().minus(Duration.parse("100d")), Clock.System.now().minus(Duration.parse("2m"))),
     )
 
-    override fun blogPostById(id: UUID): BlogPost? = testPosts.find { it.id == id }
+    override suspend fun blogPostById(id: UUID): BlogPost? = testPosts.find { it.id == id }
 
-    override fun blogPostsByTitleExact(title: String): BlogPost? = testPosts.find { it.title == title }
+    override suspend fun blogPostsByTitleExact(title: String): BlogPost? = testPosts.find { it.title == title }
 
-    override fun blogPostsByTitleSearch(title: String): List<BlogPost> = testPosts.filter { it.title.lowercase().contains(title.lowercase()) }
+    override suspend fun blogPostsByTitleSearch(title: String): List<BlogPost> = testPosts.filter { it.title.lowercase().contains(title.lowercase()) }
 
-    override fun blogPostsByContentSearch(content: String): List<BlogPost> = testPosts.filter { it.content.lowercase().contains(content.lowercase()) }
+    override suspend fun blogPostsByContentSearch(content: String): List<BlogPost> = testPosts.filter { it.content.lowercase().contains(content.lowercase()) }
 
-    override fun allBlogPosts(): List<BlogPost> = testPosts
+    override suspend fun allBlogPosts(): List<BlogPost> = testPosts
 
-    override fun addBlogPost(post: BlogPostCreateEditDTO): BlogPost {
+    override suspend fun addBlogPost(post: BlogPostCreateEditDTO): BlogPost {
         if (blogPostsByTitleExact(post.title) != null) {
             throw IllegalStateException("Blog post with that title already exists")
         }
@@ -40,7 +40,7 @@ class FakeBlogPostRepository: BlogPostRepository {
         return blogPost
     }
 
-    override fun updateBlogPost(postChanges: BlogPostCreateEditDTO): BlogPost {
+    override suspend fun updateBlogPost(postChanges: BlogPostCreateEditDTO): BlogPost {
         if (postChanges.id == null) {
             throw IllegalStateException("Blog post id should be specified")
         }
@@ -52,7 +52,7 @@ class FakeBlogPostRepository: BlogPostRepository {
         return post
     }
 
-    override fun removeBlogPost(id: UUID): Boolean {
+    override suspend fun removeBlogPost(id: UUID): Boolean {
         return testPosts.removeIf { it.id == id}
     }
 }
